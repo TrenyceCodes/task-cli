@@ -1,11 +1,14 @@
 import os
 import json
+from datetime import datetime
+
+from Tasks import Tasks
 
 def getFiles() -> list[str]:
     currentWorkDirectory = os.getcwd()
     return os.listdir(currentWorkDirectory)
 
-def hasIdNumber(user_input: str) -> int:
+def hasId(user_input: str) -> int:
     id = 0
 
     for number in user_input:
@@ -14,8 +17,18 @@ def hasIdNumber(user_input: str) -> int:
     
     return id
 
+def totalTasks(fileName: str) -> int:
+    total = 0
+    with open(fileName, "r+") as file:
+        fileData = json.load(file)
+        tasks = fileData["tasks"]
+        total = len(tasks)
+
+    return total
+    
+
 def handleAllListCommands(fileName: str, user_input: str):
-    fileOpen = open(fileName)
+    fileOpen = open(fileName, "r")
     fileData = json.load(fileOpen)
 
     for tasks in fileData['tasks']:
@@ -24,6 +37,7 @@ def handleAllListCommands(fileName: str, user_input: str):
         match user_input:
             case 'list':
                 print(f'tasks in list: {tasks}')
+                print(f'num in list: {totalTasks(fileName)}')
             case 'list done':
                 if tasks_status == "done":
                     print(f'tasks done: {tasks}')
@@ -35,17 +49,70 @@ def handleAllListCommands(fileName: str, user_input: str):
                     print(f'In pogress tasks: {tasks}')
             case _:
                 print("You entered a command not found, try again")
+    
+    fileOpen.close()
 
-def markTodosStatus(fileName: str, taskID: int):
+def markTaskStatus(fileName: str, taskID: int, user_input: str):
     fileOpen = open(fileName)
     fileData = json.load(fileOpen)
+    task_found = False
 
-    for tasks in fileData['tasks']:
-        tasksID = tasks['id']
-        
+    for tasks in fileData["tasks"]:
+        tasksID = tasks.get("id")
+
         if tasksID == taskID:
-            print(tasks)
+            print(tasks["status"])
+            task_found = True
+            match user_input:
+                case "mark-in-progress":
+                    tasks["status"] = "in-progress"
+                case 'mark-done':
+                    pass
 
+        if task_found:
+            with open(fileName, 'w') as file:
+                json.dump(fileData, file, indent=4)
+            print(f'Updated tasks with id {taskID} updated successfully')
+        else:
+            print(f'Failed to update task with id {taskID}')
+    
+    fileOpen.close()
+    
+def deleteTask(fileName: str, taskID: int):
+
+    with open(fileName, 'r+') as file:
+        fileData = json.load(file)
+        
+        for tasks in fileData["tasks"]:
+            tasksID = tasks.get("id")
+
+            if tasksID != taskID:
+                deletedTask = tasks
+                fileData["tasks"].append(deletedTask)
+                json.dump(fileData, file, indent=4)
+    
+    file.close()
+
+def addTask(fileName: str):
+    with open(fileName, 'r+') as file:
+        new_data = {
+            "id": 4,
+            "description": "todo 4",
+            "status": "todo",
+            "createdAt": datetime.now().strftime('%Y-%m-%d %H-%M-%S'),
+            "updatedAt": "",
+        }
+        # Load existing data into a dictionary
+        file_data = json.load(file)
+        
+        # Append new data to the 'emp_details' list
+        file_data["tasks"].append(new_data)
+        
+        # Move the cursor to the beginning of the file
+        file.seek(0)
+        
+        # Write the updated data back to the file
+        json.dump(file_data, file, indent=4)
 
 jsonFile = ""
 currentFiles = getFiles()
@@ -60,8 +127,13 @@ while jsonFile != "":
     print("task-cli")
     user_input = input("\033[1A\033[10C")
 
-    if "list" in user_input:
+    if "add" in user_input:
+        addTask(jsonFile, )
+    elif "list" in user_input:
         handleAllListCommands(jsonFile, user_input)
     elif "mark" in user_input:
-        id = hasIdNumber(user_input)
-        markTodosStatus(jsonFile, id)
+        id = hasId(user_input)
+        markTaskStatus(jsonFile, id, user_input)
+    elif "delete" in user_input:
+        id = hasId(user_input)
+        deleteTask(jsonFile, id)
