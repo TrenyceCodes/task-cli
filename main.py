@@ -1,7 +1,7 @@
 from abc import update_abstractmethods
 import os
 import json
-from datetime import datetime
+from datetime import datetime, datetime_CAPI
 from typing import dataclass_transform
 
 from Tasks import Tasks
@@ -62,6 +62,7 @@ def markTaskInProgress(fileName: str, taskID: int):
             
             if tasksID == taskID:
                 tasks["status"] = "in-progress"
+                tasks["updatedAt"] = datetime.now().strftime('%Y-%m-%d %H-%M-%S')
 
     with open(fileName, "w") as file: 
         json.dump(fileData, file, indent=4)
@@ -75,6 +76,7 @@ def markTaskDone(fileName: str, taskID: int):
 
             if tasksID == taskID:
                 tasks["status"] = "done"
+                tasks["updatedAt"] = datetime.now().strftime('%Y-%m-%d %H-%M-%S')
 
     with open(fileName, "w") as file:
         json.dump(fileData, file, indent=4)
@@ -97,7 +99,7 @@ def addTask(fileName: str, description: str):
             "description": description,
             "status": "todo",
             "createdAt": datetime.now().strftime('%Y-%m-%d %H-%M-%S'),
-            "updatedAt": "",
+            "updatedAt": datetime.now().strftime('%Y-%m-%d $H-%M-%S'),
         }
         # Load existing data into a dictionary
         file_data = json.load(file)

@@ -2,38 +2,10 @@
     "tasks": [
         {
             "id": 1,
-            "description": "todo 1 descriptions",
-            "status": "todo",
-            "createdAt": "",
-            "updatedAt": ""
-        },
-        {
-            "id": 2,
-            "description": "todo 2 description",
-            "status": "todo",
-            "createdAt": "",
-            "updatedAt": ""
-        },
-        {
-            "id": 3,
-            "description": "todo 3 description",
-            "status": "todo",
-            "createdAt": "",
-            "updatedAt": ""
-        },
-        {
-            "id": 4,
-            "description": "todo 4",
-            "status": "todo",
-            "createdAt": "2025-07-19 19-47-41",
-            "updatedAt": ""
-        },
-        {
-            "id": 5,
-            "description": "todo 5",
-            "status": "done",
-            "createdAt": "2025-07-19 23-11-52",
-            "updatedAt": ""
+            "description": "buy groceries",
+            "status": "in-progress",
+            "createdAt": "2025-07-19 23-27-02",
+            "updatedAt": "2025-07-19 23-29-43"
         }
     ]
 }
