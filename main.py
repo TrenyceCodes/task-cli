@@ -119,11 +119,11 @@ def checkForDescription(user_input: str) -> str:
     endStr = user_input.rfind('"')
     beginningStr = user_input.index('"')
    
-    while beginningStr <= endStr:
-        description += user_input[beginningStr]
+    while beginningStr < endStr:
         beginningStr += 1
+        description += user_input[beginningStr]
 
-    return description
+    return description.replace('"', "")
 
 
 jsonFile = ""
