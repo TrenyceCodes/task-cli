@@ -1,3 +1,4 @@
+from abc import update_abstractmethods
 import os
 import json
 from datetime import datetime
@@ -36,8 +37,7 @@ def handleAllListCommands(fileName: str, user_input: str):
 
         match user_input:
             case 'list':
-                print(f'tasks in list: {tasks}')
-                print(f'num in list: {totalTasks(fileName)}')
+                print(f'{tasks}')
             case 'list done':
                 if tasks_status == "done":
                     print(f'tasks done: {tasks}')
@@ -93,11 +93,11 @@ def deleteTask(fileName: str, taskID: int):
     
     file.close()
 
-def addTask(fileName: str):
+def addTask(fileName: str, description: str):
     with open(fileName, 'r+') as file:
         new_data = {
-            "id": 4,
-            "description": "todo 4",
+            "id": totalTasks(fileName) + 1,
+            "description": description,
             "status": "todo",
             "createdAt": datetime.now().strftime('%Y-%m-%d %H-%M-%S'),
             "updatedAt": "",
@@ -114,6 +114,18 @@ def addTask(fileName: str):
         # Write the updated data back to the file
         json.dump(file_data, file, indent=4)
 
+def checkForDescription(user_input: str) -> str:
+    description = ''
+    endStr = user_input.rfind('"')
+    beginningStr = user_input.index('"')
+   
+    while beginningStr <= endStr:
+        description += user_input[beginningStr]
+        beginningStr += 1
+
+    return description
+
+
 jsonFile = ""
 currentFiles = getFiles()
 tasks_list = {}
@@ -128,7 +140,8 @@ while jsonFile != "":
     user_input = input("\033[1A\033[10C")
 
     if "add" in user_input:
-        addTask(jsonFile, )
+        taskDescription = checkForDescription(user_input)
+        addTask(jsonFile, taskDescription)
     elif "list" in user_input:
         handleAllListCommands(jsonFile, user_input)
     elif "mark" in user_input:
