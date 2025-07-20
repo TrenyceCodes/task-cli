@@ -2,6 +2,7 @@ from abc import update_abstractmethods
 import os
 import json
 from datetime import datetime
+from typing import dataclass_transform
 
 from Tasks import Tasks
 
@@ -52,46 +53,42 @@ def handleAllListCommands(fileName: str, user_input: str):
     
     fileOpen.close()
 
-def markTaskStatus(fileName: str, taskID: int, user_input: str):
-    fileOpen = open(fileName)
-    fileData = json.load(fileOpen)
-    task_found = False
+def markTaskInProgress(fileName: str, taskID: int):
+    with open(fileName, "r+") as file:
+        fileData = json.load(file)
 
-    for tasks in fileData["tasks"]:
-        tasksID = tasks.get("id")
+        for tasks in fileData["tasks"]:
+            tasksID = tasks.get("id")
+            
+            if tasksID == taskID:
+                tasks["status"] = "in-progress"
 
-        if tasksID == taskID:
-            print(tasks["status"])
-            task_found = True
-            match user_input:
-                case "mark-in-progress":
-                    tasks["status"] = "in-progress"
-                case 'mark-done':
-                    pass
-
-        if task_found:
-            with open(fileName, 'w') as file:
-                json.dump(fileData, file, indent=4)
-            print(f'Updated tasks with id {taskID} updated successfully')
-        else:
-            print(f'Failed to update task with id {taskID}')
+    with open(fileName, "w") as file: 
+        json.dump(fileData, file, indent=4)
     
-    fileOpen.close()
-    
+def markTaskDone(fileName: str, taskID: int):
+    with open(fileName, "r") as file:
+        fileData = json.load(file)
+
+        for tasks in fileData["tasks"]:
+            tasksID = tasks.get("id")
+
+            if tasksID == taskID:
+                tasks["status"] = "done"
+
+    with open(fileName, "w") as file:
+        json.dump(fileData, file, indent=4)
+
 def deleteTask(fileName: str, taskID: int):
-
     with open(fileName, 'r+') as file:
         fileData = json.load(file)
         
         for tasks in fileData["tasks"]:
-            tasksID = tasks.get("id")
-
-            if tasksID != taskID:
-                deletedTask = tasks
-                fileData["tasks"].append(deletedTask)
-                json.dump(fileData, file, indent=4)
-    
-    file.close()
+            if tasks["id"] == taskID:
+                tasks["status"] = "in-progress"
+          
+    with open(fileName, 'w') as file:
+        json.dump(fileData, file, indent=4)
 
 def addTask(fileName: str, description: str):
     with open(fileName, 'r+') as file:
@@ -144,9 +141,15 @@ while jsonFile != "":
         addTask(jsonFile, taskDescription)
     elif "list" in user_input:
         handleAllListCommands(jsonFile, user_input)
-    elif "mark" in user_input:
+    elif "mark-in-progress" in user_input:
         id = hasId(user_input)
-        markTaskStatus(jsonFile, id, user_input)
+        markTaskInProgress(jsonFile, id)
+    elif "mark-done" in user_input:
+        id = hasId(user_input)
+        markTaskDone(jsonFile, id)
     elif "delete" in user_input:
         id = hasId(user_input)
         deleteTask(jsonFile, id)
+    else:
+        print("Command not found try again")
+        continue

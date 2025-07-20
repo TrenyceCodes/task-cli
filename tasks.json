@@ -3,21 +3,21 @@
         {
             "id": 1,
             "description": "todo 1 descriptions",
-            "status": "done",
+            "status": "todo",
             "createdAt": "",
             "updatedAt": ""
         },
         {
             "id": 2,
             "description": "todo 2 description",
-            "status": "in-progress",
+            "status": "todo",
             "createdAt": "",
             "updatedAt": ""
         },
         {
             "id": 3,
             "description": "todo 3 description",
-            "status": "done",
+            "status": "todo",
             "createdAt": "",
             "updatedAt": ""
         },
@@ -31,15 +31,8 @@
         {
             "id": 5,
             "description": "todo 5",
-            "status": "todo 5",
-            "createdAt": "2025-07-19 19-48-14",
-            "updatedAt": ""
-        },
-        {
-            "id": 6,
-            "description": "beginning",
-            "status": "todo",
-            "createdAt": "2025-07-19 22-42-02",
+            "status": "done",
+            "createdAt": "2025-07-19 23-11-52",
             "updatedAt": ""
         }
     ]
