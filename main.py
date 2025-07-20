@@ -113,6 +113,17 @@ def addTask(fileName: str, description: str):
         # Write the updated data back to the file
         json.dump(file_data, file, indent=4)
 
+def updateTask(fileName: str, taskID: int, description: str):
+    with open(fileName, "r+") as file:
+        fileData = json.load(file)
+
+        for tasks in fileData["tasks"]:
+            if tasks["id"] == taskID:
+                tasks["description"] = description
+
+    with open(fileName, "w") as file:
+        json.dump(fileData, file, indent=4)
+
 def checkForDescription(user_input: str) -> str:
     description = ''
     endStr = user_input.rfind('"')
@@ -141,6 +152,10 @@ while jsonFile != "":
     if "add" in user_input:
         taskDescription = checkForDescription(user_input)
         addTask(jsonFile, taskDescription)
+    elif "update" in user_input:
+        taskDescription = checkForDescription(user_input)
+        id = hasId(user_input)
+        updateTask(jsonFile, id, taskDescription)
     elif "list" in user_input:
         handleAllListCommands(jsonFile, user_input)
     elif "mark-in-progress" in user_input:

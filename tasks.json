@@ -2,7 +2,7 @@
     "tasks": [
         {
             "id": 1,
-            "description": "buy groceries",
+            "description": "buy groceries and cook dinner",
             "status": "in-progress",
             "createdAt": "2025-07-19 23-27-02",
             "updatedAt": "2025-07-19 23-29-43"
